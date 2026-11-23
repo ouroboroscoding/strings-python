@@ -1,0 +1,27 @@
+[build-system]
+requires = [ "hatchling" ]
+build-backend = "hatchling.build"
+
+[project]
+name = "strings_oc"
+version = "1.0.8"
+description = "Generic functions for dealing with and generating strings"
+keywords = [ "strings", "string manipulation", "string generation" ]
+authors = [
+	{ name = "Chris Nasr - Ouroboros Coding Inc.", email = "chris@ouroboroscoding.com" }
+]
+maintainers = [
+	{ name = "Chris Nasr - Ouroboros Coding Inc.", email = "chris@ouroboroscoding.com" }
+]
+license-files = [ "LICENSE" ]
+readme = "README.md"
+requires-python = ">=3.10"
+dependencies = []
+
+[project.urls]
+Documentation = "https://ouroboroscoding.com/strings/"
+Source = "https://github.com/ouroboroscoding/strings-python"
+Tracker = "https://github.com/ouroboroscoding/strings-python/issues"
+
+[tool.hatch.build]
+packages = [ "strings" ]

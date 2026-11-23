@@ -11,7 +11,7 @@ __created__		= "2018-11-11"
 
 # Limit exports
 __all__ = [
-	'bytes_human', 'digits', 'from_file', 'join', 'normalize', 'random',
+	'bytes_human', 'cut', 'digits', 'from_file', 'join', 'normalize', 'random',
 	'shorten_filename', 'strip_html', 'strtr', 'to_bool', 'to_file',
 	'uuid_add_dashes', 'uuid_strip_dashes', 'version_compare'
 ]
@@ -20,7 +20,7 @@ __all__ = [
 from html.parser import HTMLParser
 from io import StringIO
 import os
-from random import randint
+from secrets import randbelow
 import re
 from sys import _getframe, stderr
 from typing import List, Literal
@@ -47,7 +47,7 @@ def bytes_human(num):
 
 	return '%.1fYiB' % num
 
-def cut(text: str, max_chars: int, ellipsis: str = '...'):
+def cut(text: str, max_chars: int, ellipsis: str = '…'):
 	"""Cut
 
 	Cuts text to a specific length without cutting words in half
@@ -66,7 +66,7 @@ def cut(text: str, max_chars: int, ellipsis: str = '...'):
 		raise ValueError('max_chars', 'must be an unsigned integer')
 
 	# If the string is already short enough, just return it
-	if len(text) < max_chars:
+	if len(text) <= max_chars:
 		return text
 
 	# Run the regex based on the length required and the ellipsis length
@@ -135,7 +135,7 @@ def from_file(
 def join(o: dict, l: List[str], separator: str = ' ') -> str:
 	"""Join
 
-	Creates a single string from a list of keys that may or may not exist in \
+	Creates a single string from a list of keys that may or may not exist in
 	the passed dict
 
 	Arguments:
@@ -178,12 +178,12 @@ def normalize(val):
 		'Ǎ': 'A', 'Â': 'A', 'Ấ': 'A', 'Ậ': 'A', 'Ầ': 'A', 'Ẩ': 'A', 'Ẫ': 'A',
 		'Ä': 'A', 'Ǟ': 'A', 'Ȧ': 'A', 'Ǡ': 'A', 'Ạ': 'A', 'Ȁ': 'A', 'À': 'A',
 		'Ả': 'A', 'Ȃ': 'A', 'Ā': 'A', 'Ą': 'A', 'Å': 'A', 'Ǻ': 'A', 'Ḁ': 'A',
-		'Ⱥ': 'A', 'Ã': 'A', 'Ɐ': 'A', 'ᴀ': 'A',
+		'Ⱥ': 'A', 'Ã': 'A', 'Ɐ': 'A', 'ᴀ': 'A', 'А': 'A',
 		 'á': 'a', 'ă': 'a', 'ắ': 'a', 'ặ': 'a', 'ằ': 'a', 'ẳ': 'a', 'ẵ': 'a',
 		 'ǎ': 'a', 'â': 'a', 'ấ': 'a', 'ậ': 'a', 'ầ': 'a', 'ẩ': 'a', 'ẫ': 'a',
 		 'ä': 'a', 'ǟ': 'a', 'ȧ': 'a', 'ǡ': 'a', 'ạ': 'a', 'ȁ': 'a', 'à': 'a',
 		 'ả': 'a', 'ȃ': 'a', 'ā': 'a', 'ą': 'a', 'ᶏ': 'a', 'ẚ': 'a', 'å': 'a',
-		 'ǻ': 'a', 'ḁ': 'a', 'ⱥ': 'a', 'ã': 'a', 'ɐ': 'a', 'ₐ': 'a', 'А': 'a',
+		 'ǻ': 'a', 'ḁ': 'a', 'ⱥ': 'a', 'ã': 'a', 'ɐ': 'a', 'ₐ': 'a',
 		 'а': 'a',
 
 		'Ꜳ': 'AA', 'Æ': 'AE', 'Ǽ': 'AE', 'Ǣ': 'AE', 'ᴁ': 'AE', 'Ꜵ': 'AO',
@@ -407,12 +407,13 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 	"""Random
 
 	Generates a random string. By default this function will generate an 8
-	character string using lowercase letters with possible repeating characters
+	character string using letters with possible repeating characters
 
 	Available sets:
 		0x:  0123456789abcdef
 		0:   01234567
 		10:  0123456789
+		10*: 123456789
 		az:  abcdefghijklmnopqrstuvwxyz
 		az*: abcdefghijkmnopqrstuvwxyz
 		AZ:  ABCDEFGHIJKLMNOPQRSTUVWXYZ
@@ -420,7 +421,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 		aZ:  abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ
 		aZ*: abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ
 		!:   !@#$%^&*-_+.?
-		!*:  !@$%^*-_.
+		!*:  !@$^*-_.
 
 	Sets with * remove problematic characters that can cause issues in humans or
 	computer systems, such as 0 (zero) or O (oh), and & which messes up
@@ -457,7 +458,9 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 
 		# If it's empty
 		if len(characters) == 0:
-			raise ValueError('characters must contain at least one set name in %s' % _getframe().f_code.co_name)
+			raise ValueError(
+				f'characters must contain at least one set name in {_getframe().f_code.co_name}'
+			)
 
 		# Go through the list of passed characters
 		for s in characters:
@@ -477,15 +480,17 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 
 	# Else, the value of sets is invalid
 	else:
-		raise ValueError('%s is not a valid value for sets argument of random' % str(characters))
+		raise ValueError(
+			f'{str(characters)} is not a valid value for sets argument of random'
+		)
 
 	# If we don't allow duplicates, and the length of available characters is
 	#	less than the expected length, throw an error
 	if not duplicates and len(sChars) < length:
-		raise ValueError('Can not generate random string with no duplicates from the given characters "%s" in %s' % (
-			sChars,
-			_getframe().f_code.co_name
-		))
+		raise ValueError(
+			'Can not generate random string with no duplicates from the given '
+			f'characters "{sChars}" in {_getframe().f_code.co_name}'
+		)
 
 	# Init the return variable
 	sText = ''
@@ -496,7 +501,7 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 	# Create a [length] of random character
 	i = 0
 	while i < length:
-		sFound = sChars[randint(0, iCount - 1)]
+		sFound = sChars[randbelow(iCount)]
 		bDup = sText.find(sFound)
 
 		if duplicates or bDup == -1:
@@ -509,12 +514,16 @@ def random(length = 8, characters = ['aZ'], duplicates = True):
 def shorten_filename(text: str, length: int) -> str:
 	"""Shorten Filename
 
-	Makes sure the name of a file is truncated to fit the length while also \
+	Makes sure the name of a file is truncated to fit the length while also
 	making sure not to damage or remove the extension
 
 	Arguments:
 		text (str): The text to truncate
 		length (uint): The maximum length of the string
+
+	Raises:
+		ValueError: If length is too small to keep the extension and at
+			least one character of the name
 
 	Returns:
 		str
@@ -527,7 +536,7 @@ def shorten_filename(text: str, length: int) -> str:
 	# Get the last period
 	iPeriod = text.rfind('.')
 
-	# If there isn't one, just return the length
+	# If there isn't one, just truncate to the requested length
 	if iPeriod == -1:
 		return text[:length]
 
@@ -535,7 +544,19 @@ def shorten_filename(text: str, length: int) -> str:
 	sExt = text[iPeriod:]
 	sName = text[:iPeriod]
 
-	# Combine the two and return
+	# Need room for the extension (including the period) plus at least one
+	# name character; otherwise we would return something like ".txt"
+	if length < len(sExt) + 1:
+		raise ValueError(
+			'length %d is too short to keep extension "%s" and at least '
+			'one name character in %s' % (
+				length,
+				sExt,
+				_getframe().f_code.co_name
+			)
+		)
+
+	# Truncate the name so name + extension equals the requested length
 	return sName[:(length - len(sExt))] + sExt
 
 class _StripHTML(HTMLParser):
@@ -652,7 +673,7 @@ def to_bool(t):
 
 	# If we didn't get a string
 	if not isinstance(t, str):
-		return ValueError('t is not a string: %s', str(type(t)))
+		raise ValueError('t is not a string: %s' % str(type(t)))
 
 	# First, convert the string to lowercase
 	t = t.lower()
@@ -683,7 +704,8 @@ def to_file(
 	Arguments:
 		filepath (str): The path to the file to store the string in
 		text (str): The text to write to the file
-		create (bool): Optional, if true, path is created if it doesn't exist
+		create_path (bool): Optional, if true, path is created if it doesn't
+			exist
 
 	Returns:
 		bool
@@ -692,8 +714,12 @@ def to_file(
 	try:
 		with open(filepath, 'w') as oF:
 			oF.write(text)
-	except FileNotFoundError as e:
-		os.makedirs(os.path.dirname(filepath), exist_ok=True)
+	except FileNotFoundError:
+		if not create_path:
+			raise
+		sDir = os.path.dirname(filepath)
+		if sDir:
+			os.makedirs(sDir, exist_ok=True)
 		with open(filepath, 'w') as oF:
 			oF.write(text)
 
@@ -711,6 +737,9 @@ def uuid_add_dashes(uuid):
 	Returns:
 		str
 	"""
+
+	# No validation: assumes a 32-character dashless UUID and inserts
+	# dashes at the standard 8-4-4-4-12 boundaries
 	return '%s-%s-%s-%s-%s' % (
 		uuid[0:8],
 		uuid[8:12],
@@ -730,6 +759,10 @@ def uuid_strip_dashes(uuid):
 	Returns:
 		str
 	"""
+
+	# No validation: assumes a canonical 8-4-4-4-12 dashed UUID and
+	# removes characters at the dash indexes; invalid input will produce
+	# a corrupted result
 	return '%s%s%s%s%s' % (
 		uuid[0:8],
 		uuid[9:13],
@@ -744,7 +777,7 @@ def version_compare(
 ) -> Literal[-1] | Literal[0] | Literal[1]:
 	"""Version Compare
 
-	Compares two version strings and returns whether the first one is less \
+	Compares two version strings and returns whether the first one is less
 	than (-1), equal (0), or greater than (1)
 
 	Arguments:

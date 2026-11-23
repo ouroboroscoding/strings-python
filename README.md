@@ -1,20 +1,27 @@
 # Strings by Ouroboros Coding
-[![pypi version](https://img.shields.io/pypi/v/strings-oc.svg)](https://pypi.org/project/strings-oc) ![MIT License](https://img.shields.io/pypi/l/strings-oc.svg)
+[![pypi version](https://img.shields.io/pypi/v/strings_oc.svg)](https://pypi.org/project/strings_oc) ![MIT License](https://img.shields.io/pypi/l/strings_oc.svg)
 
 Generic functions for dealing with and generating strings
 
+Please see [LICENSE](https://github.com/ouroboroscoding/strings-python/blob/main/LICENSE)
+for further information.
+
+See [Releases](https://github.com/ouroboroscoding/strings-python/blob/main/releases.md)
+for changes from release to release.
+
 ## Requires
-strings-oc requires python 3.10 or higher
+strings_oc requires python 3.10 or higher
 
 ## Installation
 ```bash
-pip install strings-oc
+pip install strings_oc
 ```
 
 ## Functions
 
 ### bytes_human
-Returns a human readable string using the number passed as a representation of bytes
+Returns a human readable string using the number passed as a representation of
+bytes
 ```python
 >>> from strings import bytes_human
 >>>	bytes_human(1024)
@@ -26,19 +33,22 @@ Returns a human readable string using the number passed as a representation of b
 ```
 
 ### cut
-Shortens a string so that it ends on a full word instead of halfway between words.
+Shortens a string so that it ends on a full word instead of halfway between
+words.
 ```python
 >>> from strings import cut
 >>> cut('12345 7890', 8)
-'12345...'
->>> cut('12345 7890', 8, '…')
 '12345…'
->>> cut('Hello, my name is Frank', 16, '…')
+>>> cut('12345 7890', 8, '...')
+'12345...'
+>>> cut('Hello, my name is Frank', 16)
 'Hello, my name…'
 ```
 
 ### digits
-Returns only the digits, i.e. the numeric characters, in the given string as a new string. Be careful, as this does not return numbers, but number characters, and will strip out valid float/decimal characters
+Returns only the digits, i.e. the numeric characters, in the given string as a
+new string. Be careful, as this does not return numbers, but number characters,
+and will strip out valid float/decimal characters
 ```python
 >>> from strings import digits
 >>> digits('1234abcd')
@@ -67,7 +77,8 @@ Assuming `version.dat` contained the following
 
 ```
 
-If the file doesn't exist, `from_file` returns `None`. This can be changed by passing a second argument to be the default value.
+If the file doesn't exist, `from_file` returns `None`. This can be changed by
+passing a second argument to be the default value.
 
 ```python
 >>> from strings import from_file
@@ -76,7 +87,8 @@ If the file doesn't exist, `from_file` returns `None`. This can be changed by pa
 ```
 
 ### join
-`join` creates a single string from a list of keys that may or may not exist in the passed dict.
+`join` creates a single string from a list of keys that may or may not exist in
+the passed dict.
 ```python
 >>> from strings import join
 >>> d = { 'title': 'Mr.', 'first': 'Homer', 'last': 'Simpson' }
@@ -87,7 +99,11 @@ If the file doesn't exist, `from_file` returns `None`. This can be changed by pa
 ```
 
 ### normalize
-Returns, as well as possible, a normalized string converted from another string containing characters with special accents. It does this by finding special characters and converting them into their simpler, single character, versions. This is useful for things like automaticlaly generating urls, or for generating from unicode into ascii.
+Returns, as well as possible, a normalized string converted from another string
+containing characters with special accents. It does this by finding special
+characters and converting them into their simpler, single character, versions.
+This is useful for things like automaticlaly generating urls, or for generating
+from unicode into ascii.
 ```python
 >>> from strings import normalize
 >>> normalize('Ȟěƚľỡ, Ẉợɽḷᶁ!')
@@ -119,7 +135,10 @@ Returns a random string based on set parameters.
 'WMLdawtSCEFeNtsg'
 ```
 #### characters
-`characters` represents the set of chars that are allowed in the string. There is no limit on this list, and no necessity the values be different. This allows for modifying the randomness if there are characters you want to make "more random"
+`characters` represents the set of chars that are allowed in the string. There
+is no limit on this list, and no necessity the values be different. This allows
+for modifying the randomness if there are characters you want to make "more
+random"
 ```python
 >>> random(8, 'AAAAa')
 'AAAAAAAA'
@@ -128,7 +147,8 @@ Returns a random string based on set parameters.
 >>> random(characters = 'AAaaa', length = 8)
 'aaaaAAaA'
 ```
-`characters` can be set using special built in sets, and can be accessed by passing a list instead of a string
+`characters` can be set using special built in sets, and can be accessed by
+passing a list instead of a string
 ```python
 >>> random(16, ['aZ'])
 'KwDNSoFPlVVTxwhj'
@@ -143,6 +163,7 @@ Returns a random string based on set parameters.
 | 0x | 0123456789abcdef |
 | 0 | 01234567 |
 | 10 | 0123456789 |
+| 10* | 123456789 |
 | az | abcdefghijklmnopqrstuvwxyz |
 | az* | abcdefghijkmnopqrstuvwxyz |
 | AZ | ABCDEFGHIJKLMNOPQRSTUVWXYZ |
@@ -150,11 +171,15 @@ Returns a random string based on set parameters.
 | aZ | abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ |
 | aZ* | abcdefghijkmnopqrstuvwxyzABCDEFGHJKLMNPQRSTUVWXYZ |
 | ! | !@#$%^&*-_+.? |
-| !* | !@$%^*-_. |
+| !* | !@$^*-_. |
 
-\* sets denote removal of characters that might confuse, either systems or humans. &, #, etc for the former, and I, l, O, etc for the latter.
+\* sets denote removal of characters that might confuse, either systems or
+humans. &, #, etc for the former, and I, l, O, etc for the latter.
 #### duplicates
-By default `random` allows duplicate characters in a string, and doesn't see any issue with that. But it's possible you have an issue with it, and want a string made up completely of non-repeating characters. If so, set `duplicates` to `False`.
+By default `random` allows duplicate characters in a string, and doesn't see any
+issue with that. But it's possible you have an issue with it, and want a string
+made up completely of non-repeating characters. If so, set `duplicates` to
+`False`.
 ```python
 >>> random(16, ['az'], False)
 'ifaunxgtzbywkmpr'
@@ -165,16 +190,23 @@ ValueError: Can not generate random string with no duplicates from the given cha
 ```
 
 ### shorten_filename
-`shorten_filename` allows for truncating filenames without losing or damaging the extension of the file. Useful for when you need to add a filename for an uploaded file to a database and you are limited by the length of the field.
+`shorten_filename` allows for truncating filenames without losing or damaging
+the extension of the file. Useful for when you need to add a filename for an
+uploaded file to a database and you are limited by the length of the field.
 ```python
 >>> from strings import shorten_filename
 >>> shorten_filename('hello_there_my_friend.txt', 16)
 'hello_there_.txt'
 ```
-As you can see, the name part of the file is shortened, but the .txt stays intact, avoiding potential problems with mime lookup.
+As you can see, the name part of the file is shortened, but the .txt stays
+intact, avoiding potential problems with mime lookup. If the requested length
+is too short to keep the extension and at least one character of the name, a
+`ValueError` is raised.
 
 ### strip_html
-`strip_html` takes an HTML string and removes all the tags/elements while retaining the cdata. Useful for content that needs to be displayed without formatting.
+`strip_html` takes an HTML string and removes all the tags/elements while
+retaining the cdata. Useful for content that needs to be displayed without
+formatting.
 ```python
 >>> from strings import strip_html
 >>> strip_html('<p>This is a test</p>')
@@ -192,8 +224,12 @@ As you can see, the name part of the file is shortened, but the .txt stays intac
 ```
 
 ### to_bool
-`to_bool` is useful for turning any string into a valid boolean. But will raise an exception if the value does not represent a bool as it sees it. First, it converts the string to lowercase, then it checks it against the following:
+`to_bool` is useful for turning any string into a valid boolean. But will raise
+an exception if the value does not represent a bool as it sees it. First, it
+converts the string to lowercase, then it checks it against the following:
+
 Valid `True` values contain '1', 'on', 't', 'true', 'y', 'yes', 'x'
+
 Valid `False` values contain '0', 'f', 'false', 'n', 'no', 'off', ''
 ```python
 >>> from strings import to_bool
@@ -206,10 +242,15 @@ ValueError: "2" is not a valid boolean representation in to_bool
 ```
 
 ### to_file
-Stores a string in a file, overwriting the existing contents, or creating the file if it didn't exist.
+Stores a string in a file, overwriting the existing contents, or creating the
+file if it didn't exist. Pass `create_path = True` to create missing parent
+directories; with the default `create_path = False`, a missing directory raises
+`FileNotFoundError`.
 ```python
 >>> from strings import to_file
 >>> to_file('version.dat', '1.1.0')
+True
+>>> to_file('does/not/exist/version.dat', '1.1.0', create_path = True)
 True
 ```
 The `version.dat` file will now contain the following
@@ -218,7 +259,9 @@ The `version.dat` file will now contain the following
 ```
 
 ### uuid_add_dashes
-Used to add dashes "-" to a string representation of a UUID that has none.
+Used to add dashes "-" to a string representation of a UUID that has none. Does
+not validate the input; it assumes a 32-character dashless UUID and inserts
+dashes at the standard 8-4-4-4-12 boundaries.
 ```python
 >>> from strings import uuid_add_dashes
 >>> uuid_add_dashes('b22eb45ac98311eca05a80fa5b0d7c77')
@@ -227,6 +270,8 @@ Used to add dashes "-" to a string representation of a UUID that has none.
 
 ### uuid_strip_dashes
 Used to strip dashes "-" from a string representation of a UUID that has them.
+Does not validate the input; it assumes a canonical dashed UUID. Invalid input
+will produce a corrupted result.
 ```python
 >>> from strings import uuid_strip_dashes
 >>> uuid_strip_dashes('b22eb45a-c983-11ec-a05a-80fa5b0d7c77')
@@ -234,7 +279,8 @@ Used to strip dashes "-" from a string representation of a UUID that has them.
 ```
 
 ### version_compare
-Compares to version strings and returns if the first is less than (-1), equal to (0) or greater than (1) the second
+Compares to version strings and returns if the first is less than (-1), equal to
+(0) or greater than (1) the second.
 ```python
 >>> from strings import version_compare
 >>> version_compare('1.0.1', '1.0')
